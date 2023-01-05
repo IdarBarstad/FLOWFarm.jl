@@ -1,6 +1,7 @@
 using Ipopt
 using DelimitedFiles 
 using PyPlot
+using Distributed  # Seems to be missing , ADDED BY IB
 import ForwardDiff
 
 using CSV
@@ -28,7 +29,7 @@ function boundary_wrapper(x, params)
     turbine_x = x[1:nturbines]
     turbine_y = x[nturbines+1:end]
 
-    boundcon_a = ff.ray_trace_boundary(boundary_vertices_a, boundary_normals_a, turbine_x[1:31], turbine_y[1:31])
+    boundcon_a = ff.ray_trace_boundary(boundary_vertices_a, boundary_normals_a, turbine_x[1:31], turbine_y[1:31])  # IB: DO YOU MEAN *ray_casting_* ?
     boundcon_b = ff.ray_trace_boundary(boundary_vertices_b, boundary_normals_b, turbine_x[32:42], turbine_y[32:42])
     boundcon_c = ff.ray_trace_boundary(boundary_vertices_c, boundary_normals_c, turbine_x[43:58], turbine_y[43:58])
     boundcon_d = ff.ray_trace_boundary(boundary_vertices_d, boundary_normals_d, turbine_x[59:72], turbine_y[59:72])
@@ -258,6 +259,7 @@ lb_g = ones(n_constraints) * -Inf
 ub_g = zeros(n_constraints)
 
 # create the problem
+# IB: THIS ("createProblem") IS NOT KNOWN:
 prob = createProblem(n_designvariables, lb, ub, n_constraints, lb_g, ub_g, n_designvariables*n_constraints, 0,
     obj, con, obj_grad, con_grad)
 addOption(prob, "hessian_approximation", "limited-memory")
